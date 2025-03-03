@@ -1,50 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-import os
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+"""Flask app for searching recipes based on available ingredients"""
+
+from flask import Flask, request, jsonify, render_template, session, flash
+from models import db, connect_db, User, Recipe
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_cors import CORS
+from forms import UserLogin, CreateUser
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
+CORS(app)
 
-# Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://recipe_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipefinder'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_ECHO'] = True
+app.config['SECRET_KEY'] = 'secret'
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
-# Import models and forms
-from models import db, User, Recipe
-from forms import RegistrationForm, LoginForm
+connect_db(app)
 
-# Home Route - Render homepage with ingredient input form
+with app.app_context():
+    db.create_all()
+
 @app.route('/')
 def home():
-    pass  # TODO: Render the home page template
-
-# Search Route - Fetch recipes based on user input ingredients
-@app.route('/search', methods=['POST'])
-def search():
-    pass  # TODO: Fetch recipes from the API based on ingredients and display results
-
-# Nutrition Route - Fetch nutritional data for a recipe
-@app.route('/nutrition', methods=['GET'])
-def nutrition():
-    pass  # TODO: Get recipe name and fetch nutritional info using Edamam API
-
-# Register Route - Handle user registration
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    pass  # TODO: Handle user registration, store in DB, and redirect to login
-
-# Login Route - Handle user authentication
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    pass  # TODO: Authenticate user and start session
-
-# Logout Route - Log out user and clear session
-@app.route('/logout')
-def logout():
-    pass  # TODO: Clear session and redirect to home page
-
-if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
+    '''This should render the landing page with the following options:
+        -Login
+        -Register to create a new account
+    '''
+    
+    form = UserLogin()
+    
+    return render_template("index.html", form=form)
