@@ -9,7 +9,23 @@
     <title>{%block title%} Page Title {% endblock %} </title>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-primary justify-content-between"></nav>
+    <nav class="navbar navbar-light bg-primary justify-content-between">
+        <div class='container'>
+            <a href='/' class='navbar-brand text-light'>Find a Recipe</a>
+            <ul class='nav navbar-nav flex-row float-right'> 
+            {% if session['user_id'] %}
+            <li class="nav-item">
+                <a class="nav-link pr-3 text-light" href="/logout">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link pr-3 text-light" href="/">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link pr-3 text-light" href="/register">Sign up</a>
+            </li>
+            {% endif %}
+    </nav>
 
     <div class='container-fluid'>
 

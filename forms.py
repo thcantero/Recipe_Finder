@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, EmailField
+from wtforms import StringField, DateField, EmailField, PasswordField
 from wtforms.validators import InputRequired, Length
 
 
@@ -11,7 +11,7 @@ class CreateUser(FlaskForm):
                        validators=[InputRequired(message='Field cannot be empty'),
                                    Length(8)])
     
-    password = StringField('Password',
+    password = PasswordField('Password',
                        validators=[InputRequired(message='Field cannot be empty'),
                                    Length(12)])
     
@@ -21,11 +21,11 @@ class CreateUser(FlaskForm):
     
     name = StringField('Name',
                        validators=[InputRequired(message='Field cannot be empty'),
-                                   Length(30)])
+                                   Length(5)])
     
     last_name = StringField('Last Name',
                        validators=[InputRequired(message='Field cannot be empty'),
-                                   Length(30)])
+                                   Length(5)])
     
     dob = DateField('Date of Birth',
                        validators=[InputRequired(message='Field cannot be empty')])
@@ -39,6 +39,6 @@ class UserLogin(FlaskForm):
                        validators=[InputRequired(message='Field cannot be empty'),
                                    Length(8)])
     
-    password = StringField('Password',
+    password = PasswordField('Password',
                        validators=[InputRequired(message='Field cannot be empty'),
                                    Length(12)])
