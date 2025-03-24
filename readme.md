@@ -27,9 +27,6 @@ This project aims to deliver a **full-stack** experience, emphasizing both user 
     ├── templates/                # HTML templates
     ├── config.py                 # Configuration settings (e.g., database URL, API keys)
     ├── models/                   # Database models
-    │   ├── user.py
-    │   ├── recipes.py
-    │   └── ...
     ├── utils/                    # Helper functions (e.g., API calls, data processing)
     └── README.md                 # Project readme
 
