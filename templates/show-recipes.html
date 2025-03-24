@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Find-a-Recipe{% endblock %}
+
+{% block content %}
+
+<h1>What do you feel like cooking today?</h1>
+ 
+<p>a grid that shows recipes we can cook with the available ingredients</p>
+
+<div class='container my-4'>
+    <h3 class='mb-4'>Here are some ideas:</h3>
+
+    <div class='row g-4'>
+        {% for recipe in recipes %}
+
+        <div class='col-sm-6 col-md-4 col-lg-3 d-flex'>
+            <div class='card flex-fill'>
+
+                <!-- Card Image -->
+                <img src="{{ recipe.image }}" alt="{{ recipe.title }}" style="max-width:100px;">
+
+                <!-- Card body --> 
+                <h5 class="card-title">{{ recipe.title }}</h5>
+                
+                <p class="card-text mb-1"><strong>Used Ingredients:</strong> {{ recipe.usedIngredientCount }}</p>
+                <p class="card-text mb-1"><strong>Missing Ingredients:</strong> {{ recipe.missedIngredientCount }}</p>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
