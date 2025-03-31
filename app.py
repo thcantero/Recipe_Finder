@@ -1,6 +1,6 @@
 """Flask app for searching recipes based on available ingredients"""
 
-import os, requests
+import os, requests, json
 from flask import Flask, request, jsonify, render_template, session, flash, redirect
 from models import db, connect_db, User, Recipe
 from flask_debugtoolbar import DebugToolbarExtension
@@ -103,27 +103,43 @@ def validate_login():
     #If user is logged in, return True
     return True
     
-@app.route('/search-ingredients')
+@app.route('/ingredients-search')
 def choose_ingredients():
     '''
-    Search and choose ingredients to look for recipes
+    Search and choose ingredients to look for recipes.
+    Renders the ingredients search page with JS for autocomplete.
     '''
-    
-    # query = request.args.get('q')
-    # if not query:
-    #     return jsonify([]) #Return empty list if no query
-    
-    # url = 'https://api.spoonacular.com/food/ingredients/autocomplete'
-    # params = {
-    #     'apiKey': SPOONACULAR_API_KEY,
-    #     'query': query,
-    #     'number': 10 #number of suggestions showed
-    # }
-    
-    #resp = request.get(url, params)
     
     return render_template('ingredients-search.html')
 
+@app.route('/autocomplete')
+def autocomplete():
+    '''
+    Returns JSON list of ingredients suggestions.
+    '''
+    
+    
+    query = request.args.get('q')
+    if not query:
+        return jsonify([]) #Return empty list if no query
+    
+    url = 'https://api.spoonacular.com/food/ingredients/autocomplete'
+    params = {
+        'apiKey': SPOONACULAR_API_KEY,
+        'query': query,
+        'number': 10 #number of suggestions showed
+    }
+    
+    print("Sending request to Spoonacular with params:", params)
+
+    try:
+        resp = requests.get(url, params=params)
+        resp.raise_for_status()
+        return jsonify(resp.json())
+    except Exception as e:
+        print("🔥 ERROR in /autocomplete:", e)
+        return jsonify({'error': str(e)}), 500
+    
 
 @app.route('/recipe/<ingredients>')
 def show_recipes(ingredients):
@@ -132,7 +148,7 @@ def show_recipes(ingredients):
     URL: https://api.spoonacular.com/recipes/findByIngredients
     
     Parameters:
-    ingredients: string. A comma-separated list of ingredients that the recipes should contain.
+    ingredients: string. A comma-separated list of ingredients that the recipes should contain. 
     number: int. The maximum number of recipes to return (1 - 100)
     ranking : int. Whether to maximize user ingredients (1) or minimize missing ingredients (2) first.
     ignorePantry: boolean. Whether to ignore typical pantry items, such as water, salt, flour, etc.
@@ -152,16 +168,98 @@ def show_recipes(ingredients):
     resp = requests.get(url, params=params)
     
     data = resp.json() #list of recipes
+    
     return render_template('show-recipes.html', recipes=data, ingredients=ingredients)
-    
-    
-    
-    
 
 @app.route('/recipe/<int:id>')
 def display_recipe(id):
     '''
     Display the recipe details according to the id received
     '''
+    
+    url = f"https://api.spoonacular.com/recipes/{id}/information"
+    params = {
+        'apiKey': SPOONACULAR_API_KEY
+    }
+
+    try:
+        resp = requests.get(url, params=params)
+        resp.raise_for_status()
+        data = resp.json()
+        return render_template('display-recipe.html', recipe=data)
+    except Exception as e:
+        print("Error fetching recipe details:", e)
+        flash("Sorry, we couldn't load this recipe.")
+        return redirect('/homepage')
+    
+    #GET https://api.spoonacular.com/recipes/{id}/information
+    
+    #Have a flag to choose fav recipes and store those on the database
+    #Have a view of favorites by id: If not available on the API, store it in the DB
+    #Store the entire Json in the db
+    
+@app.route('/favorite', methods=["POST"])
+def save_favorite():
+    result = validate_login()
+    
+    user_id = session['user_id']
+    recipe_id = request.form.get('recipe_id')
+    recipe_json_str = request.form.get('recipe_json')
+
+    try:
+        print("🔍 Raw recipe_json_str:", recipe_json_str[:1000])  # show first 1000 chars
+        print("📏 Length of string:", len(recipe_json_str))
+        recipe_data = json.loads(recipe_json_str)
+        recipe_name = recipe_data.get('title', 'Unnamed Recipe')
+
+        new_recipe = Recipe(
+            user_id=user_id,
+            recipe_id=recipe_id,
+            recipe_name=recipe_name,
+            json_data=recipe_json_str
+        )
+
+        # Prevent duplicates
+        exists = Recipe.query.filter_by(user_id=user_id, recipe_id=recipe_id).first()
+        if exists:
+            flash("You've already saved this recipe.")
+        else:
+            db.session.add(new_recipe)
+            db.session.commit()
+            flash("Recipe saved to your favorites!")
+
+    except Exception as e:
+        print("Error saving favorite:", e)
+        flash("Could not save recipe.")
+
+    return redirect(request.referrer or '/homepage')
+
+@app.route('/favorites')
+def show_favorites():
+    result = validate_login()
+
+    user_id = session['user_id']
+    favorites = Recipe.query.filter_by(user_id=user_id).all()
+    
+    parsed = []
+    for recipe in favorites:
+        try:
+            parsed_data = json.loads(recipe.json_data)
+            parsed.append({
+                "title": parsed_data.get("title"),
+                "image": parsed_data.get("image"),
+                "readyInMinutes": parsed_data.get("readyInMinutes"),
+                "id": recipe.recipe_id
+            })
+        except Exception as e:
+            print(f"Error parsing recipe JSON: {e}")
+            
+    return render_template('favorites.html', recipes=favorites)
+    
+    
+    
+    
+    
+#Keep the routes here, but I could move the logic to a different file
     
     

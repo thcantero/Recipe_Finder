@@ -73,7 +73,7 @@ class User(db.Model):
 
 class Recipe(db.Model):
     
-    __tablename_ = 'recipes'
+    __tablename__ = 'recipes'
     
     id = db.Column(db.Integer, 
                    primary_key=True)
@@ -87,6 +87,8 @@ class Recipe(db.Model):
     
     recipe_name = db.Column(db.String(200), 
                             nullable=False)
+    
+    json_data = db.Column(db.Text)
     
     timestamp = db.Column(db.DateTime, 
                           default=db.func.current_timestamp())

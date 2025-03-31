@@ -5,13 +5,21 @@
 {% block content %}
 
 <h1>Search for the Ingredients you have</h1>
-<input type='text' id='ingredient-input' placeholder='Type an ingredient ...' autocomplete='off'>
-<div id='suggestions' style='border:1px solid #ccc; max-width:300px;'></div>
 
-<!-- how can i do it using java script to search and populate the search --> 
 
-<form>
-<button>Search Recipes</button>
+<!-- how can i do it using java script to search and populate the search: send the query from here using JS and make 
+ sure I encode the query
+ https://www.w3schools.com/jsref/jsref_encodeuricomponent.asp
+ --> 
+
+ <form id="ingredient-form">
+    <input type="text" id="ingredient-input" placeholder="Type an ingredient..." autocomplete="off" class="form-control">
+    <div id="suggestions" class="mt-2 border rounded bg-light p-2"></div>
+    <button class="btn btn-primary mt-3" type="submit">Search Recipes</button>
 </form>
-
 {% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='ingredient-search.js') }}"></script>
+{% endblock %}
+

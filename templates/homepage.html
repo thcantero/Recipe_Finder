@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Find-a-Recipe{% endblock %}
+{% block title %}Welcome{% endblock %}
 
 {% block content %}
+<div class="container text-center mt-5">
+    <h1>Welcome back! 🧑‍🍳</h1>
+    <p class="lead">Ready to cook something delicious today?</p>
 
-<div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="custom-container p-4 shadow-lg rounded">
-        <h1 class='text-center'> Sign Up </h1>
-        <p class="lead">This is the homepage </p>
+    <div class="d-flex justify-content-center mt-4">
+        <a href="/ingredients-search" class="btn btn-primary btn-lg mx-2">🔍 Find Recipes</a>
+        <a href="/favorites" class="btn btn-outline-danger btn-lg mx-2">❤️ View Favorites</a>
     </div>
 </div>
 {% endblock %}
