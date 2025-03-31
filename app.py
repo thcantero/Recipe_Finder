@@ -245,6 +245,7 @@ def show_favorites():
     for recipe in favorites:
         try:
             parsed_data = json.loads(recipe.json_data)
+            print("🔍 Parsed data", parsed_data.get('title'))
             parsed.append({
                 "title": parsed_data.get("title"),
                 "image": parsed_data.get("image"),
@@ -254,7 +255,7 @@ def show_favorites():
         except Exception as e:
             print(f"Error parsing recipe JSON: {e}")
             
-    return render_template('favorites.html', recipes=favorites)
+    return render_template('favorites.html', recipes=parsed)
     
     
     
