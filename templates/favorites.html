@@ -4,17 +4,19 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Your Saved Recipes ❤️</h1>
+    <h1 class="mb-4 text-center">Your Saved Recipes ❤️</h1>
 
     {% if recipes %}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
         {% for recipe in recipes %}
         <div class="col d-flex align-items-stretch">
-            <div class="card h-100 w-100">
+            <div class="card h-100 shadow-sm">
+                {% if recipe.image %}
                 <img src="{{ recipe.image }}" class="card-img-top" alt="{{ recipe.title }}">
+                {% endif %}
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ recipe.title }}</h5>
-                    <p><strong>Ready in:</strong> {{ recipe.readyInMinutes }} min</p>
+                    <p class="card-text"><strong>Ready in:</strong> {{ recipe.readyInMinutes or '?' }} min</p>
                     <a href="/recipe/{{ recipe.id }}" class="btn btn-outline-primary mt-auto">View Recipe</a>
                 </div>
             </div>
@@ -22,7 +24,7 @@
         {% endfor %}
     </div>
     {% else %}
-    <p>You haven't saved any recipes yet.</p>
+    <p class="text-center">You haven't saved any recipes yet.</p>
     {% endif %}
 </div>
 {% endblock %}
