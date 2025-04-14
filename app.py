@@ -17,7 +17,7 @@ load_dotenv()
 SPOONACULAR_API_KEY = os.environ.get('SPOONACULAR_API_KEY')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipefinder'
+app.config['SQLALCHEMY_DATABASE_URI'] = (os.environ.get('DATABASE_URL','postgresql:///recipefinder'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
