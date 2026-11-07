@@ -170,13 +170,3 @@ This helps reduce food waste and saves time. The project is designed to be a rob
 For now, this project is licensed under the **MIT License**, making it permissible for anyone to use or modify. You can read more about the MIT License in the [LICENSE](LICENSE) file.
 
 ---
-
-### About the Author
-
-I’m Thalia—a **product manager with an MBA** and currently pursuing a **master’s in Computer Science with a focus on AI**. I love bridging **business strategy**, **user-centric design**, and **cutting-edge technology** to tackle real-world challenges—like helping people utilize the ingredients they already have. This project reflects my passion for combining **practical solutions** with **data-driven insights** in a delightful user experience.
-
-You can find more of my work here:
-- [**LinkedIn**](https://www.linkedin.com/in/thaliacantero/)
-- [**GitHub**](https://github.com/thcantero)
-
-**Feel free to reach out** for feedback, collaboration, or just to chat about AI, product development, and of course—cooking!
